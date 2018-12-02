@@ -151,8 +151,8 @@ include_once("bd/dbConex.php");
 
       return $this->result;
     }
-    function get_ddep_ID(){
-      $query = $this->db->query("SELECT *, (SELECT nombre FROM m_terceros WHERE id = fk_mTerceros) AS nombre FROM m_ddep WHERE m_ddep.estado = 'ACT'")->fetchALL(PDO::FETCH_OBJ);
+    function get_ddep_ID($params){
+      $query = $this->db->query("SELECT *, (SELECT nombre FROM m_terceros WHERE id = fk_mTerceros) AS nombre FROM m_ddep WHERE id = ".$params['id'])->fetchALL(PDO::FETCH_OBJ);
       $this->result = $query;
 
       return $this->result;
@@ -171,8 +171,8 @@ include_once("bd/dbConex.php");
     }
 
     //Tabla d_res_ddep
-    function get_respuesta_GEN($id){
-      $insert = $this->db->query("INSERT INTO d_res_ddep (fk_mDdep) VALUES ('".$id."')");
+    function set_respuesta_GEN($id){
+      $insert = $this->db->query("INSERT INTO d_res_ddep(fk_mDdep) VALUES ('".$id."')");
       $this->result = $this->db->errorInfo();
 
       return $this->result;
@@ -180,6 +180,12 @@ include_once("bd/dbConex.php");
     function get_respuesta_DDEP($params){
       $query = $this->db->query("SELECT * FROM d_res_ddep WHERE fk_mDdep = ".$params['id'])->fetchALL(PDO::FETCH_OBJ);
       $this->result = $query;
+
+      return $this->result;
+    }
+    function set_respuesta_ADD($params){
+      $insert = $this->db->query("UPDATE d_res_ddep SET reso_res = '".$params['reso_res']."', fecha_res = '".$params['fecha_res']."', notificacion = '".$params['notificacion']."', fecha_noti = '".$params['fecha_noti']."' WHERE fk_mDdep = ".$params['fk_mDdep']);
+      $this->result = $this->db->errorInfo();
 
       return $this->result;
     }

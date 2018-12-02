@@ -326,52 +326,6 @@ session_start();
       echo json_encode($result);
     }
 
-    function get_DdeP_ACT(){
-      if (!isset($_SESSION['cc-status'])) {
-        $result['status'] = "ERROR";
-        $result['err_mns'] = "No tiene autorizacion para acceder.";
-      }else{
-      $data = $this->setup->get_ddep_ACT();
-        for ($i=0; $i < count($data); $i++) {
-          $result['data'][$i][0] = "<a href='?nt=ddep_det&id=".$data[$i]->id."' data-toggle='tooltip' data-placement='left' title='".utf8_encode($data[$i]->obs)."'>".$data[$i]->num_ddep."</a> ";
-          $result['data'][$i][1] = $data[$i]->fecha_ddep;
-          $result['data'][$i][2] = $data[$i]->fk_mTerceros;
-          $result['data'][$i][3] = $data[$i]->nombre;
-          $result['data'][$i][4] = $data[$i]->reso_res;
-          $result['data'][$i][5] = $data[$i]->fecha_res;
-        }
-      }
-      echo json_encode($result);
-    }
-    function set_DdeP_NEW(){
-      $params['num_ddep'] = $_REQUEST['num_ddep'];
-      $params['fecha_ddep'] = $_REQUEST['fecha_ddep'];
-      $params['fk_mTerceros'] = $_REQUEST['fk_mTerceros'];
-      $params['direccion'] = $_REQUEST['direccion'];
-      $params['obs'] = utf8_decode($_REQUEST['obs']);
-      $params['ciudad'] = $_REQUEST['ciudad'];
-
-      if(count($this->setup->get_ddepID_NUM($params)) == 0){
-
-        $edit = $this->setup->set_ddep_NEW($params);
-
-        if ($edit[0] == "00000") {
-          $id = $this->setup->get_ddepID_NUM($params);
-          $result['status'] = 'SUCCESS';
-          $result['ddep'] = $id[0]->id;
-        }else{
-          $result['status'] = 'ERROR';
-          $result['err_code'] = $edit[0];
-          $result['err_mns'] = $edit[2];
-        }
-
-      }else{
-        $result['status'] = 'ERROR';
-        $result['err_mns'] = 'El derecho de petición que desea crear ya existe!';
-      }
-      echo json_encode($result);
-    }
-
     function get_terceros_ID(){
       if (!isset($_SESSION['cc-status'])) {
         $result['status'] = "ERROR";
@@ -412,8 +366,104 @@ session_start();
       echo json_encode($result);
     }
 
+    function get_DdeP_ACT(){
+      if (!isset($_SESSION['cc-status'])) {
+        $result['status'] = "ERROR";
+        $result['err_mns'] = "No tiene autorizacion para acceder.";
+      }else{
+      $data = $this->setup->get_ddep_ACT();
+        for ($i=0; $i < count($data); $i++) {
+          $result['data'][$i][0] = "<a href='?nt=ddep_det&id=".$data[$i]->id."' data-toggle='tooltip' data-placement='left' title='".utf8_encode($data[$i]->obs)."'>".$data[$i]->num_ddep."</a> ";
+          $result['data'][$i][1] = $data[$i]->fecha_ddep;
+          $result['data'][$i][2] = $data[$i]->fk_mTerceros;
+          $result['data'][$i][3] = $data[$i]->nombre;
+          $result['data'][$i][4] = $data[$i]->reso_res;
+          $result['data'][$i][5] = $data[$i]->fecha_res;
+        }
+      }
+      echo json_encode($result);
+    }
+    function set_DdeP_NEW(){
+      $params['num_ddep'] = $_REQUEST['num_ddep'];
+      $params['fecha_ddep'] = $_REQUEST['fecha_ddep'];
+      $params['fk_mTerceros'] = $_REQUEST['fk_mTerceros'];
+      $params['direccion'] = $_REQUEST['direccion'];
+      $params['obs'] = utf8_decode($_REQUEST['obs']);
+      $params['ciudad'] = $_REQUEST['ciudad'];
+
+      if(count($this->setup->get_ddepID_NUM($params)) == 0){
+
+        $edit = $this->setup->set_ddep_NEW($params);
+
+        if ($edit[0] == "00000") {
+          $id = $this->setup->get_ddepID_NUM($params);
+          mkdir("views/public/".$params['num_ddep'], 0700);
+          $result['status'] = 'SUCCESS';
+          $result['ddep'] = $id[0]->id;
+        }else{
+          $result['status'] = 'ERROR';
+          $result['err_code'] = $edit[0];
+          $result['err_mns'] = $edit[2];
+        }
+
+      }else{
+        $result['status'] = 'ERROR';
+        $result['err_mns'] = 'El derecho de petición que desea crear ya existe!';
+      }
+      echo json_encode($result);
+    }
+
+    function set_respuesta_NEW(){
+      $id = $_REQUEST['id'];
+
+      $insert = $this->setup->set_respuesta_GEN($id);
+
+      if ($insert[0] == "00000") {
+        $result['status'] = 'SUCCESS';
+      }else{
+        $result['status'] = 'ERROR';
+        $result['err_code'] = $insert[0];
+        $result['err_mns'] = $insert[2];
+      }
+
+      echo json_encode($result);
+    }
+    function set_respuesta_EDIT(){
+      $params['fk_mDdep'] = $_REQUEST['fk_mDdep'];
+      $params['reso_res'] = $_REQUEST['reso_res'];
+      $params['fecha_res'] = $_REQUEST['fecha_res'];
+      $params['notificacion'] = strtoupper($_REQUEST['notificacion']);
+      $params['fecha_noti'] = $_REQUEST['fecha_noti'];
+
+      $insert = $this->setup->set_respuesta_ADD($params);
+
+      if ($insert[0] == "00000") {
+        $result['status'] = 'SUCCESS';
+      }else{
+        $result['status'] = 'ERROR';
+        $result['err_code'] = $insert[0];
+        $result['err_mns'] = $insert[2];
+      }
+
+      echo json_encode($result);
+    }
+
+
+
+
     function prueba(){
-      echo $this->setup->get_cuentas_VAL($params['ncuenta']);
+      $params['fk_mDdep'] = "01163";
+      $dir_subida = "views/public/".$params['fk_mDdep']."/";
+      $fichero_subido = $dir_subida . basename($_FILES['archivo']['name']);
+
+      echo '<pre>';
+      if (move_uploaded_file($_FILES['archivo']['tmp_name'], $fichero_subido)) {
+        $result['status'] = 'SUCCESS';
+      } else {
+        $result['status'] = 'ERROR';
+        $result['msn_err'] = 'Ups Algo Ocurrio';
+      }
+      echo json_encode($result);
     }
 
   }

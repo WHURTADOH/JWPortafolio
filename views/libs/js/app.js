@@ -488,23 +488,103 @@ $(document).ready(function(){
       bootbox.alert('Los campos marcados con * son obligatorios!')
     }
   })
-  $('#btn_ddep_edit').on('click',function(){
+  $('#btn_res_edit').on('click',function(){
     $(this).addClass('d-none');
-    $('#btn_ddep_undo').removeClass('d-none');
-    $('#btn_ddep_save').removeClass('d-none');
+    $('#btn_res_undo').removeClass('d-none');
+    $('#btn_res_save').removeClass('d-none');
     $('#ddep_res_reso').removeAttr('readonly');
     $('#ddep_res_fecha').removeAttr('readonly');
     $('#ddep_noti').removeAttr('readonly');
     $('#ddep_noti_fecha').removeAttr('readonly');
   })
-  $('#btn_ddep_undo').on('click',function(){
+  $('#btn_res_undo').on('click',function(){
     $(this).addClass('d-none');
-    $('#btn_ddep_edit').removeClass('d-none');
-    $('#btn_ddep_save').addClass('d-none');
+    $('#btn_res_edit').removeClass('d-none');
+    $('#btn_res_save').addClass('d-none');
     $('#ddep_res_reso').prop('readonly', 'true');
     $('#ddep_res_fecha').prop('readonly', 'true');
     $('#ddep_noti').prop('readonly', 'true');
     $('#ddep_noti_fecha').prop('readonly', 'true');
+  })
+  $('#new_res_ddep').on('click',function(){
+    let form_data = new FormData();
+    form_data.append('id', $('#ddep_num').data('id'))
+    $.ajax({
+      url: 'index.php?nt=set_respuesta_NEW',
+      dataType: "json",
+      cache: false,
+      processData: false,
+      contentType: false,
+      data: form_data,
+      type: 'POST',
+      success: function(php_response){
+        if (php_response.status == "SUCCESS") {
+          location.reload();
+        }else {
+          bootbox.alert(php_response.err_mns);
+        }
+      },
+      error: function(){
+        bootbox.alert("Error en la comunicación con el servidor");
+      }
+    })
+  })
+  $('#btn_res_save').on('click',function(){
+    let form_data = new FormData();
+    form_data.append('fk_mDdep', $('#ddep_num').data('id'))
+    form_data.append('reso_res', $('#ddep_res_reso').val())
+    form_data.append('fecha_res', $('#ddep_res_fecha').val())
+    form_data.append('notificacion', $('#ddep_noti').val())
+    form_data.append('fecha_noti', $('#ddep_noti_fecha').val())
+    $.ajax({
+      url: 'index.php?nt=set_respuesta_EDIT',
+      dataType: "json",
+      cache: false,
+      processData: false,
+      contentType: false,
+      data: form_data,
+      type: 'POST',
+      success: function(php_response){
+        if (php_response.status == "SUCCESS") {
+          location.reload();
+        }else {
+          bootbox.alert(php_response.err_mns);
+        }
+      },
+      error: function(){
+        bootbox.alert("Error en la comunicación con el servidor");
+      }
+    })
+  })
+  $('#ddep_pres_filed').on('change',function(){
+    if (valid_input('#ddep_pres_file')) {
+      let file2 = $('#ddep_pres_file');   //Ya que utilizas jquery aprovechalo...
+      let archivo = file2[0].files;
+      console.log(archivo)
+      let form_data = new FormData($('#frm_vigencias')[0]);
+      form_data.append('fk_mDdep', $('#ddep_num').data('id'))
+      $.ajax({
+        url: 'index.php?nt=prueba',
+        dataType: "json",
+        cache: false,
+        processData: false,
+        contentType: false,
+        data: form_data,
+        type: 'POST',
+        success: function(php_response){
+          if (php_response.status == "SUCCESS") {
+            location.reload();
+          }else {
+            bootbox.alert(php_response.err_mns);
+          }
+        },
+        error: function(){
+          bootbox.alert("Error en la comunicación con el servidor");
+        }
+      })
+    }else{
+      bootbox.alert('No ha seleccionado ningun archivo.')
+    }
   })
 
 
