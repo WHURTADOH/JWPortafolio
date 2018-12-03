@@ -184,9 +184,10 @@
                 <div class="col-sm-12">
                   <div class="card">
                     <div class="card-body">
-                      <h5 class="card-title">Predios Relacionados</h5>
+                      <h5 class="card-title">Archivos en el Directorio</h5>
                       <hr>
-
+                      <ul id="ddep_directorio" class="list-group">
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -197,3 +198,4 @@
         </main>
       </div>
     </div>
+    <script type="text/javascript" src="views/libs/js/ddep.js"></script>

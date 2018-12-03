@@ -10,6 +10,62 @@ session_start();
     function display_mns($instancia,$tipo,$mns){
       header("location: ?nt=".$instancia."&mns_t=".base64_encode($tipo)."&mns_m=".base64_encode($mns));
     }
+    function elimina_acentos($text){
+        $text = htmlentities($text, ENT_QUOTES, 'UTF-8');
+        $text = strtolower($text);
+        $patron = array (
+            // Espacios, puntos y comas por guion
+            //'/[\., ]+/' => ' ',
+
+            // Vocales
+            '/\+/' => '',
+            '/&agrave;/' => 'a',
+            '/&egrave;/' => 'e',
+            '/&igrave;/' => 'i',
+            '/&ograve;/' => 'o',
+            '/&ugrave;/' => 'u',
+
+            '/&aacute;/' => 'a',
+            '/&eacute;/' => 'e',
+            '/&iacute;/' => 'i',
+            '/&oacute;/' => 'o',
+            '/&uacute;/' => 'u',
+
+            '/&acirc;/' => 'a',
+            '/&ecirc;/' => 'e',
+            '/&icirc;/' => 'i',
+            '/&ocirc;/' => 'o',
+            '/&ucirc;/' => 'u',
+
+            '/&atilde;/' => 'a',
+            '/&etilde;/' => 'e',
+            '/&itilde;/' => 'i',
+            '/&otilde;/' => 'o',
+            '/&utilde;/' => 'u',
+
+            '/&auml;/' => 'a',
+            '/&euml;/' => 'e',
+            '/&iuml;/' => 'i',
+            '/&ouml;/' => 'o',
+            '/&uuml;/' => 'u',
+
+            '/&auml;/' => 'a',
+            '/&euml;/' => 'e',
+            '/&iuml;/' => 'i',
+            '/&ouml;/' => 'o',
+            '/&uuml;/' => 'u',
+
+            // Otras letras y caracteres especiales
+            '/&aring;/' => 'a',
+            '/&ntilde;/' => 'n',
+
+            // Agregar aqui mas caracteres si es necesario
+
+        );
+
+        $text = preg_replace(array_keys($patron),array_values($patron),$text);
+        return $text;
+    }
 
     //================= ADMINISTRACIÓN DE SESSION ======================//
     function login(){
@@ -143,7 +199,6 @@ session_start();
         $params['id'] = $_REQUEST['id'];
         $ddep = $this->setup->get_ddep_ID($params);
         $resp = $this->setup->get_respuesta_DDEP($params);
-        $directorio = scandir("views/public/".$_REQUEST['ddep']."/");
         include_once('views/structure/header.php');
         include_once('views/structure/navbar.php');
         include_once('views/resources/ddep_det.php');
@@ -413,7 +468,7 @@ session_start();
     }
     function set_DdeP_ANX(){
       $params['fk_mDdep'] = $_REQUEST['fk_mDdep'];
-      $params['file'] = $_REQUEST['file'];
+      $params['file'] = $_REQUEST['file'] == '' ? $this->elimina_acentos($_FILES['archivo']['name']) : $this->elimina_acentos($_REQUEST['file']);
       $dir_subida = "views/public/".$params['fk_mDdep']."/".$params['file'];
 
       if (move_uploaded_file($_FILES['archivo']['tmp_name'], $dir_subida)) {
@@ -460,9 +515,32 @@ session_start();
       echo json_encode($result);
     }
 
-    function prueba(){
+    function get_directorio(){
+      $ddep = $_REQUEST['ddep'];
+      $directorio = scandir("views/public/".$ddep."/");
 
-      print_r($ficheros1);
+      if (count($directorio) == 0) {
+        $result['status'] = "ERROR";
+      }else{
+        $result['status'] = "SUCCESS";
+        $result['ddep'] = $ddep;
+        for ($i=2; $i < count($directorio); $i++) {
+          $result['dir'][$i - 2] = $directorio[$i];
+        }
+      }
+      echo json_encode($result);
+    }
+    function del_directorio(){
+      $url = $_REQUEST['url'];
+      unlink($url);
+
+      if (file_exists($url)) {
+        $result['status'] = "ERROR";
+        $result['err_mns'] = "El Archivo no se elimino";
+      }else{
+        $result['status'] = "SUCCESS";
+      }
+      echo json_encode($result);
     }
 
   }

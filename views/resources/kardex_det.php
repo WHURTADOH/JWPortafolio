@@ -310,3 +310,4 @@
         </div>
       </div>
     </div>
+    <script type="text/javascript" src="views/libs/js/kardex.js"></script>
