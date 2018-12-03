@@ -556,49 +556,11 @@ $(document).ready(function(){
       }
     })
   })
-  $('#ddep_pres_filed').on('change',function(){
+  $('#ddep_pres_file').on('change',function(){
     if (valid_input('#ddep_pres_file')) {
-      let file2 = $('#ddep_pres_file');   //Ya que utilizas jquery aprovechalo...
-      let archivo = file2[0].files;
-      console.log(archivo)
-      let form_data = new FormData($('#frm_vigencias')[0]);
-      form_data.append('fk_mDdep', $('#ddep_num').data('id'))
-      $.ajax({
-        url: 'index.php?nt=prueba',
-        dataType: "json",
-        cache: false,
-        processData: false,
-        contentType: false,
-        data: form_data,
-        type: 'POST',
-        success: function(php_response){
-          if (php_response.status == "SUCCESS") {
-            location.reload();
-          }else {
-            bootbox.alert(php_response.err_mns);
-          }
-        },
-        error: function(){
-          bootbox.alert("Error en la comunicación con el servidor");
-        }
-      })
+      subir_archivos('#frm_vigencias','vigencias.txt');
     }else{
       bootbox.alert('No ha seleccionado ningun archivo.')
-    }
-  })
-
-
-
-
-
-  $('input:radio[name=options]').on('change',function(){
-    let pres = $('input:radio[name=options]:checked').val();
-    if (pres == 'true') {
-      alert("SI")
-      console.log(pres)
-    }else{
-      alert("NO")
-
     }
   })
 
@@ -614,4 +576,28 @@ function valid_select(nodo){
 function valid_radio(nodo){
   let valid = $(nodo).val() == undefined ? false : true;
   return valid;
+}
+function subir_archivos(formulario,file_name){
+  let form_data = new FormData($(formulario)[0]);
+  form_data.append('fk_mDdep', $('#ddep_num').val())
+  form_data.append('file', file_name)
+  $.ajax({
+    url: 'index.php?nt=set_DdeP_ANX',
+    dataType: "json",
+    cache: false,
+    processData: false,
+    contentType: false,
+    data: form_data,
+    type: 'POST',
+    success: function(php_response){
+      if (php_response.status == "SUCCESS") {
+        bootbox.alert('El archivo se subio con exito.');
+      }else {
+        bootbox.alert(php_response.err_mns);
+      }
+    },
+    error: function(){
+      bootbox.alert("Error en la comunicación con el servidor");
+    }
+  })
 }

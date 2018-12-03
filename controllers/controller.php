@@ -143,14 +143,13 @@ session_start();
         $params['id'] = $_REQUEST['id'];
         $ddep = $this->setup->get_ddep_ID($params);
         $resp = $this->setup->get_respuesta_DDEP($params);
+        $directorio = scandir("views/public/".$_REQUEST['ddep']."/");
         include_once('views/structure/header.php');
         include_once('views/structure/navbar.php');
         include_once('views/resources/ddep_det.php');
         include_once('views/structure/end.php');
       }
     }
-
-
 
     //=================== FUNCIONES DE API ========================//
     function get_kardex_ALL(){
@@ -412,6 +411,19 @@ session_start();
       }
       echo json_encode($result);
     }
+    function set_DdeP_ANX(){
+      $params['fk_mDdep'] = $_REQUEST['fk_mDdep'];
+      $params['file'] = $_REQUEST['file'];
+      $dir_subida = "views/public/".$params['fk_mDdep']."/".$params['file'];
+
+      if (move_uploaded_file($_FILES['archivo']['tmp_name'], $dir_subida)) {
+        $result['status'] = 'SUCCESS';
+      } else {
+        $result['status'] = 'ERROR';
+        $result['msn_err'] = 'Ups Algo Ocurrio';
+      }
+      echo json_encode($result);
+    }
 
     function set_respuesta_NEW(){
       $id = $_REQUEST['id'];
@@ -448,22 +460,9 @@ session_start();
       echo json_encode($result);
     }
 
-
-
-
     function prueba(){
-      $params['fk_mDdep'] = "01163";
-      $dir_subida = "views/public/".$params['fk_mDdep']."/";
-      $fichero_subido = $dir_subida . basename($_FILES['archivo']['name']);
 
-      echo '<pre>';
-      if (move_uploaded_file($_FILES['archivo']['tmp_name'], $fichero_subido)) {
-        $result['status'] = 'SUCCESS';
-      } else {
-        $result['status'] = 'ERROR';
-        $result['msn_err'] = 'Ups Algo Ocurrio';
-      }
-      echo json_encode($result);
+      print_r($ficheros1);
     }
 
   }

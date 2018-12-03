@@ -31,17 +31,13 @@
                       </div>
                     </div>
                     <div class="col-sm-12 col-md-4">
-                      <div class="form-group">
-                        <label for="ddep_tercero">Es Prescripción:</label>
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                          <label class="btn btn-success">
-                            <input type="radio" name="options" id="option2" autocomplete="off" value='true'> SI
-                          </label>
-                          <label class="btn btn-secondary">
-                            <input type="radio" name="options" id="option3" autocomplete="off" value='false' checked> NO
-                          </label>
-                        </div>
-                      </div>
+                      <label for="frm_respuesta">Respuesta DdeP:</label>
+                      <form id="frm_respuesta" enctype="multipart/form-data">
+                          <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="ddep_res_file" name="archivo">
+                            <label class="custom-file-label" for="ddep_res_file">Archivo</label>
+                          </div>
+                      </form>
                     </div>
                   </div>
                   <div class="row">
@@ -112,15 +108,14 @@
                     </div>
                   </div>
                   <div class="row">
-                    <form id="frm_vigencias" action="?nt=prueba" method="post" enctype="multipart/form-data">
-                    <div class="col-sm-12">
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="ddep_pres_file" name="archivo" value="Buscar">
-                        <label class="custom-file-label" for="ddep_pres_file">Vigencias (Archivo TXT)</label>
+                    <form id="frm_vigencias" enctype="multipart/form-data">
+                      <div class="col-sm-12">
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" id="ddep_pres_file" name="archivo">
+                          <label class="custom-file-label" for="ddep_pres_file">Vigencias (Archivo TXT)</label>
+                        </div>
                       </div>
-                      <button type="submit" name="button" value="Enviar"></button>
                     </form>
-                    </div>
                   </div>
                 </div>
               </div>
