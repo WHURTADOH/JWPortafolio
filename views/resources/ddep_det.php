@@ -64,7 +64,7 @@
                     <div class="col-sm-12 col-md-6">
                       <div class="form-group">
                         <label for="ddep_mun">Ciudad:</label>
-                        <input type="text" class="form-control" id="ddep_mun" value="<?php echo $ddep[0]->nombre ?>" readonly>
+                        <input type="text" class="form-control" id="ddep_mun" value="<?php echo $ddep[0]->ciudad ?>" readonly>
                       </div>
                     </div>
                   </div>
@@ -81,7 +81,7 @@
                 <div class="card-body">
                   <h5 class="card-title">Datos de Prescripción</h5>
                   <hr>
-                  <div class="row">
+                  <div class="row mb-3">
                     <div class="col-sm-12 col-md-3">
                       <div class="form-group">
                         <label for="ddep_pres_yini">Año Inicial</label>
@@ -107,15 +107,20 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <form id="frm_vigencias" enctype="multipart/form-data">
-                      <div class="col-sm-12">
+                  <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12">
+                      <form id="frm_vigencias" enctype="multipart/form-data">
                         <div class="custom-file">
                           <input type="file" class="custom-file-input" id="ddep_pres_file" name="archivo">
                           <label class="custom-file-label" for="ddep_pres_file">Vigencias (Archivo TXT)</label>
                         </div>
-                      </div>
-                    </form>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-sm-12">
+                      <button id="btn_new_predios" type="button" class="btn btn-primary">Relacionar Predios</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -198,4 +203,29 @@
         </main>
       </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="d_predios" tabindex="-1" role="dialog" aria-labelledby="d_prediosLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="d_prediosLabel">Predios Relacionados</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <ul id="lst_predios" class="list-group">
+
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button id="gen_predios" type="button" class="btn btn-primary">Generar Archivo</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="text/javascript" src="views/libs/js/ddep.js"></script>
+    <script type="text/javascript">
+      directorio()
+    </script>

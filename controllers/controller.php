@@ -543,5 +543,49 @@ session_start();
       echo json_encode($result);
     }
 
+    function get_predios(){
+      $tercero = $_REQUEST['ident'];
+
+      $predios = $this->setup->get_predios_TERCERO($tercero);
+
+      for ($i=0; $i < count($predios); $i++) {
+        $result['predios'][$i]['id'] = $predios[$i]->id;
+        $result['predios'][$i]['codigo'] = $predios[$i]->codigo;
+        $result['predios'][$i]['dir'] = $predios[$i]->dir;
+        $result['predios'][$i]['avaluo'] = $predios[$i]->avaluo;
+      }
+      $result['status'] = "SUCCESS";
+
+
+      echo json_encode($result);
+    }
+
+    function set_predios_TXT(){
+      $ddep = $_REQUEST['num_ddep'];
+      $predios = json_decode($_REQUEST['predios']);
+
+      $ruta = "views/public/".$ddep."/predios.txt";
+
+      if (file_exists($ruta)) {
+        unlink($ruta);
+      }
+
+      if ($prediosTXT = fopen($ruta,"a")) {
+        for ($i=0; $i < count($predios); $i++) {
+          $pred = $this->setup->get_predios_ID($predios[$i]->value);
+          $linea = $pred[$i]->codigo.",".$pred[$i]->dir.",".$pred[$i]->avaluo;
+          fwrite($prediosTXT,$linea.PHP_EOL);
+        }
+
+        fclose($archivo);
+        $result['status'] = 'SUCCESS';
+      }else {
+        $result['status'] = 'ERROR';
+        $result['err_mns'] = 'Ocurrio un error y el archivo no se creo con exito';
+      }
+
+      echo json_encode($result);
+    }
+
   }
 ?>

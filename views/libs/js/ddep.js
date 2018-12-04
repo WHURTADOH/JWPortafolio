@@ -1,5 +1,4 @@
 $(document).ready(function(){
-  directorio()
   $('[data-toggle="tooltip"]').tooltip()
   $('#tbl_ddep').DataTable( {
     "ajax": 'index.php?nt=get_ddep_ACT',
@@ -186,6 +185,64 @@ $(document).ready(function(){
     }else{
       bootbox.alert('No ha seleccionado ningun archivo.')
     }
+  })
+  $('#btn_new_predios').on('click',function(){
+    $('#d_predios').modal('show');
+    let tercero = $('#ddep_tercero').val();
+    let form_data = new FormData();
+    form_data.append('ident', tercero)
+    $.ajax({
+      url: 'index.php?nt=get_predios',
+      dataType: "json",
+      cache: false,
+      processData: false,
+      contentType: false,
+      data: form_data,
+      type: 'POST',
+      success: function(php_response){
+        if (php_response.status == "SUCCESS") {
+          let predios = php_response.predios
+          $('#lst_predios').empty()
+          for (var i = 0; i < predios.length; i++) {
+            let id = predios[i].id
+            let codigo = predios[i].codigo
+            let dir = predios[i].dir
+            let avaluo = predios[i].avaluo
+            let label = codigo + ',' + dir + ',' + avaluo
+
+            $('#lst_predios').append('<li class="list-group-item"><div class="form-check"><input name="predios[]" class="form-check-input predios" type="checkbox" value="' + id + '" id="predio'+ id +'"><label class="form-check-label" for="predio'+ id +'">' + label + '</label></div></li>')
+
+          }
+        }
+      },
+      error: function(){
+        bootbox.alert("Error en la comunicación con el servidor");
+      }
+    })
+  })
+  $('#gen_predios').on('click',function(){
+    let form_data = new FormData();
+    form_data.append('num_ddep', $('#ddep_num').val())
+    form_data.append('predios', JSON.stringify($('[name="predios[]"]').serializeArray()))
+    $.ajax({
+      url: 'index.php?nt=set_predios_TXT',
+      dataType: "json",
+      cache: false,
+      processData: false,
+      contentType: false,
+      data: form_data,
+      type: 'POST',
+      success: function(php_response){
+        if (php_response.status == "SUCCESS") {
+          directorio();
+        }else {
+          bootbox.alert(php_response.err_mns);
+        }
+      },
+      error: function(){
+        bootbox.alert("Error en la comunicación con el servidor");
+      }
+    })
   })
 
 })

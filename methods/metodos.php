@@ -190,6 +190,20 @@ include_once("bd/dbConex.php");
       return $this->result;
     }
 
+    //Tabla d_predios
+    function get_predios_TERCERO($tercero){
+      $query = $this->db->query("SELECT * FROM d_predios WHERE fk_mTerceros = ".$tercero)->fetchALL(PDO::FETCH_OBJ);
+      $this->result = $query;
+
+      return $this->result;
+    }
+    function get_predios_ID($id){
+      $query = $this->db->query("SELECT * FROM d_predios WHERE id = ".$id)->fetchALL(PDO::FETCH_OBJ);
+      $this->result = $query;
+
+      return $this->result;
+    }
+
 
 
   }
