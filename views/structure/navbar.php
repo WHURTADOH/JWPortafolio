@@ -3,6 +3,28 @@
         <img src="images/logo.svg" width="30" height="30" alt="">
         Cobro Coactivo
       </a>
+      <div class="dropdown mr-2 float-right">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="navbar-search" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-search"></i>
+          Buscar Proceso o DDEP
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbar-search">
+          <form class="px-4 py-3">
+            <div class="input-group input-group-sm mb-3">
+              <input id="txt-search-kardex" type="text" class="form-control" placeholder="Kardex">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary btn-sm" type="button" id="btn-search-kardex"><i class="fas fa-search"></i></button>
+              </div>
+            </div>
+            <div class="input-group input-group-sm mb-3">
+              <input id="txt-search-ddep" type="text" class="form-control" placeholder="DDEP">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary btn-sm" type="button" id="btn-search-ddep"><i class="fas fa-search"></i></button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
       <div class="dropdown mr-2">
         <button class="btn btn-primary dropdown-toggle" type="button" id="navbar-perfil" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fas fa-user"></i>

@@ -143,16 +143,28 @@ include_once("bd/dbConex.php");
 
       return $this->result;
     }
+    function set_terceros_EDIT($params){
+      $update = $this->db->query("UPDATE m_terceros SET nombre = '".$params['nombre']."' WHERE id = ".$params['id']);
+      $this->result = $this->db->errorInfo();
+
+      return $this->result;
+    }
 
     //Tabla DdeP
     function get_ddep_ACT(){
-      $query = $this->db->query("SELECT *, (SELECT nombre FROM m_terceros WHERE id = fk_mTerceros) AS nombre, (SELECT reso_res FROM d_res_ddep WHERE fk_mDdep = m_ddep.id) AS reso_res, (SELECT fecha_res FROM d_res_ddep WHERE fk_mDdep = m_ddep.id) AS fecha_res FROM m_ddep WHERE m_ddep.estado = 'ACT'")->fetchALL(PDO::FETCH_OBJ);
+      $query = $this->db->query("SELECT *, (SELECT nombre FROM m_terceros WHERE id = fk_mTerceros) AS nombre, (SELECT reso_res FROM d_res_ddep WHERE fk_mDdep = m_ddep.id) AS reso_res, (SELECT fecha_res FROM d_res_ddep WHERE fk_mDdep = m_ddep.id) AS fecha_res FROM m_ddep WHERE m_ddep.estado = 'ACT' ORDER BY fecha_ddep ASC, num_ddep DESC")->fetchALL(PDO::FETCH_OBJ);
       $this->result = $query;
 
       return $this->result;
     }
     function get_ddep_ID($params){
       $query = $this->db->query("SELECT *, (SELECT nombre FROM m_terceros WHERE id = fk_mTerceros) AS nombre FROM m_ddep WHERE id = ".$params['id'])->fetchALL(PDO::FETCH_OBJ);
+      $this->result = $query;
+
+      return $this->result;
+    }
+    function get_ddep_NUM($params){
+      $query = $this->db->query("SELECT *, (SELECT nombre FROM m_terceros WHERE id = fk_mTerceros) AS nombre FROM m_ddep WHERE num_ddep = '".$params['num_ddep']."'")->fetchALL(PDO::FETCH_OBJ);
       $this->result = $query;
 
       return $this->result;
@@ -165,6 +177,18 @@ include_once("bd/dbConex.php");
     }
     function set_ddep_NEW($params){
       $insert = $this->db->query("INSERT INTO m_ddep(num_ddep, fecha_ddep, fk_mTerceros, direccion, obs, ciudad, estado) VALUES ('".$params['num_ddep']."', '".$params['fecha_ddep']."', '".$params['fk_mTerceros']."', '".$params['direccion']."', '".$params['obs']."', '".$params['ciudad']."','ACT')");
+      $this->result = $this->db->errorInfo();
+
+      return $this->result;
+    }
+    function set_prescripcion($params){
+      $query = $this->db->query("UPDATE m_ddep SET ".$params['column']." = '".$params['value']."' WHERE id = ".$params['id']);
+      $this->result = $this->db->errorInfo();
+
+      return $this->result;
+    }
+    function set_ddep_IND($params){
+      $update = $this->db->query("UPDATE m_ddep SET ".$params['column']." = '".$params['value']."' WHERE id = ".$params['id']);
       $this->result = $this->db->errorInfo();
 
       return $this->result;

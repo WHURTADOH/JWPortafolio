@@ -18,6 +18,12 @@
             Derechos de Petición
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link <?php if($_GET['nt'] == 'informes'){ echo 'active';}else{ echo 'text-white';} ?>" href="?nt=informes">
+            <i class="fas fa-copy"></i>
+            Informes
+          </a>
+        </li>
       </li>
     </ul>
 

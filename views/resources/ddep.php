@@ -79,7 +79,7 @@
                 </div>
               </div>
               <div class="col-sm-6 pt-4">
-                <span id="new_ddepNombre"></span>
+                <span id="new_ddepNombre"> <img id="loader" src="images/loader.gif" class="d-none" width="60"> </span>
               </div>
             </div>
 
@@ -100,6 +100,7 @@
 
           </div>
           <div class="modal-footer">
+            <img id="loader_save" src="images/loader.gif" class="d-none" width="60">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             <button id="btn_ddepNEW" type="button" class="btn btn-primary">Guardar</button>
           </div>

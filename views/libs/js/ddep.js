@@ -7,6 +7,7 @@ $(document).ready(function(){
     }
   });
   $('#btn_ddepTercero').on('click',function(){
+    $('#loader').removeClass('d-none')
     if (valid_input('#new_ddepTercero')) {
       let form_data = new FormData();
       form_data.append('id', $('#new_ddepTercero').val())
@@ -21,6 +22,7 @@ $(document).ready(function(){
         success: function(php_response){
           if (php_response.status == "SUCCESS") {
             $('#new_ddepNombre').html(php_response.tercero)
+            $('#loader').addClass('d-none')
           }else if(php_response.status == "NOEXIST") {
             bootbox.confirm({
               size: "small",
@@ -47,12 +49,14 @@ $(document).ready(function(){
                         success: function(php_response){
                           if (php_response.status == "SUCCESS") {
                             $('#new_ddepNombre').html(php_response.tercero)
+                            $('#loader').addClass('d-none')
                           }else{
                             bootbox.alert(php_response.err_mns)
                           }
                         },
                         error: function(){
                           bootbox.alert("Error en la comunicación con el servidor");
+                          $('#loader').addClass('d-none')
                         }
                       })
                     }
@@ -62,17 +66,21 @@ $(document).ready(function(){
             });
           }else{
             bootbox.alert(php_response.err_mns)
+            $('#loader').addClass('d-none')
           }
         },
         error: function(){
           bootbox.alert("Error en la comunicación con el servidor");
+          $('loader').addClass('d-none')
         }
       })
     }else{
       bootbox.alert("Debe ingresar un numero de identificación")
+      $('loader').addClass('d-none')
     }
   })
   $('#btn_ddepNEW').on('click',function(){
+    $('#loader_save').removeClass('d-none')
     if (valid_input('#new_ddepNum') && valid_input('#new_ddepFecha') && valid_input('#new_ddepTercero') && valid_input('#new_ddepObs')) {
       let form_data = new FormData();
       form_data.append('num_ddep', $('#new_ddepNum').val())
@@ -91,17 +99,20 @@ $(document).ready(function(){
         type: 'POST',
         success: function(php_response){
           if (php_response.status == "SUCCESS") {
-            location.href ="?nt=ddep_det&id=" + php_response.ddep;
+            location.href ="?nt=ddep_det&id=" + php_response.ddep
           }else {
-            bootbox.alert(php_response.err_mns);
+            bootbox.alert(php_response.err_mns)
+            $('#loader_save').addClass('d-none')
           }
         },
         error: function(){
-          bootbox.alert("Error en la comunicación con el servidor");
+          bootbox.alert("Error en la comunicación con el servidor")
+          $('#loader_save').addClass('d-none')
         }
       })
     }else{
       bootbox.alert('Los campos marcados con * son obligatorios!')
+      $('#loader_save').addClass('d-none')
     }
   })
   $('#btn_res_edit').on('click',function(){
@@ -123,6 +134,7 @@ $(document).ready(function(){
     $('#ddep_noti_fecha').prop('readonly', 'true');
   })
   $('#new_res_ddep').on('click',function(){
+    $('#loader_res').removeClass('d-none')
     let form_data = new FormData();
     form_data.append('id', $('#ddep_num').data('id'))
     $.ajax({
@@ -137,15 +149,18 @@ $(document).ready(function(){
         if (php_response.status == "SUCCESS") {
           location.reload();
         }else {
+          $('#loader_res').addClass('d-none')
           bootbox.alert(php_response.err_mns);
         }
       },
       error: function(){
+        $('#loader_res').addClass('d-none')
         bootbox.alert("Error en la comunicación con el servidor");
       }
     })
   })
   $('#btn_res_save').on('click',function(){
+    $('#loader_add_res').removeClass('d-none')
     let form_data = new FormData();
     form_data.append('fk_mDdep', $('#ddep_num').data('id'))
     form_data.append('reso_res', $('#ddep_res_reso').val())
@@ -164,10 +179,12 @@ $(document).ready(function(){
         if (php_response.status == "SUCCESS") {
           location.reload();
         }else {
+          $('#loader_add_res').addClass('d-none')
           bootbox.alert(php_response.err_mns);
         }
       },
       error: function(){
+        $('#loader_add_res').addClass('d-none')
         bootbox.alert("Error en la comunicación con el servidor");
       }
     })
@@ -235,6 +252,7 @@ $(document).ready(function(){
       success: function(php_response){
         if (php_response.status == "SUCCESS") {
           directorio();
+          $('#d_predios').modal('hide');
         }else {
           bootbox.alert(php_response.err_mns);
         }
@@ -243,6 +261,116 @@ $(document).ready(function(){
         bootbox.alert("Error en la comunicación con el servidor");
       }
     })
+  })
+  $('#ddep_pres_yini').on('change',function(){
+    let val = $(this).val()
+    prescripcion('y_ini',val);
+  })
+  $('#ddep_pres_yfin').on('change',function(){
+    let val = $(this).val()
+    prescripcion('y_fin',val);
+  })
+  $('#ddep_pres_vini').on('change',function(){
+    let val = $(this).val()
+    prescripcion('v_ini',val);
+  })
+  $('#ddep_pres_vfin').on('change',function(){
+    let val = $(this).val()
+    prescripcion('v_fin',val);
+  })
+  $('#ddep_pres_trim').on('change',function(){
+    let val = $(this).val()
+    prescripcion('trimestre',val);
+  })
+  $('#ddep_dir').on('dblclick',function(){ $(this).removeAttr('readonly'); }).focusout(function(){ $(this).attr('readonly','true'); }).on('change',function(){
+    if (valid_input('#ddep_dir')) {
+      ddep_edit('direccion',$('#ddep_dir').val())
+      $(this).attr('readonly','true');
+    }
+  })
+  $('#ddep_mun').on('dblclick',function(){ $(this).removeAttr('readonly'); }).focusout(function(){ $(this).attr('readonly','true'); }).on('change',function(){
+    if (valid_input('#ddep_mun')) {
+      ddep_edit('ciudad',$('#ddep_mun').val())
+      $(this).attr('readonly','true');
+    }
+  })
+  $('#ddep_nombre').on('dblclick',function(){ $(this).removeAttr('readonly'); }).focusout(function(){ $(this).attr('readonly','true'); }).on('change',function(){
+    if (valid_input('#ddep_nombre')) {
+      tercero_edit($('#ddep_nombre').val())
+      $(this).attr('readonly','true');
+    }
+  })
+  $('#ddep_tercero').on('dblclick',function(){ $(this).removeAttr('readonly'); }).focusout(function(){ $(this).attr('readonly','true'); }).on('change',function(){
+    if (valid_input('#ddep_tercero')) {
+      let form_data = new FormData();
+      form_data.append('id', $('#ddep_tercero').val())
+      $.ajax({
+        url: 'index.php?nt=get_terceros_ID',
+        dataType: "json",
+        cache: false,
+        processData: false,
+        contentType: false,
+        data: form_data,
+        type: 'POST',
+        success: function(php_response){
+          if (php_response.status == "SUCCESS") {
+            ddep_edit('fk_mTerceros',$('#ddep_tercero').val())
+            $('#ddep_nombre').val(php_response.tercero)
+            $('#ddep_tercero').attr('readonly','true');
+          }else if(php_response.status == "NOEXIST") {
+            bootbox.confirm({
+              size: "small",
+              message: php_response.err_mns,
+              buttons: {
+                confirm: { label: 'Si', className: 'btn-success' },
+                cancel: { label: 'No', className: 'btn-danger' }
+              },
+              callback: function (result) {
+                if (result) {
+                  bootbox.prompt("Ingrese el Nombre del Tercero", function(result){
+                    if(result != null){
+                      let form_data = new FormData();
+                      form_data.append('id', $('#ddep_tercero').val())
+                      form_data.append('nombre', result)
+                      $.ajax({
+                        url: 'index.php?nt=set_terceros_NEW',
+                        dataType: "json",
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        data: form_data,
+                        type: 'POST',
+                        success: function(php_response){
+                          if (php_response.status == "SUCCESS") {
+                            ddep_edit('fk_mTerceros',$('#ddep_tercero').val())
+                            $('#ddep_nombre').val(php_response.tercero)
+                            $('#ddep_tercero').attr('readonly','true');
+                          }else{
+                            bootbox.alert(php_response.err_mns)
+                            $('#ddep_tercero').attr('readonly','true');
+                          }
+                        },
+                        error: function(){
+                          bootbox.alert("Error en la comunicación con el servidor");
+                          $('#ddep_tercero').attr('readonly','true');
+                        }
+                      })
+                    }
+                  });
+                }
+              }
+            });
+          }else{
+            bootbox.alert(php_response.err_mns)
+            $('#ddep_tercero').attr('readonly','true');
+          }
+        },
+        error: function(){
+          bootbox.alert("Error en la comunicación con el servidor");
+          $(this).attr('readonly','true');
+        }
+      })
+    }
   })
 
 })
@@ -284,6 +412,7 @@ function subir_archivos(formulario,file_name){
   })
 }
 function directorio(){
+  $('#icn_dir').addClass('fa-spin')
   let ddep = $('#ddep_num').val();
   let form_data = new FormData();
   form_data.append('ddep', ddep)
@@ -304,6 +433,7 @@ function directorio(){
           let ruta = "views/public/" + ddep + "/" + archivo
           $('#ddep_directorio').append('<li class="list-group-item d-flex justify-content-between align-items-center"><a href="' + ruta + '" target="_blank"><i class="fas fa-arrow-circle-right"></i> ' + archivo + '</a><button data-file="' + ruta + '" type="button" class="btn btn-danger btn-sm dir_file"><i class="fas fa-trash"></i></button></li>')
         }
+        $('#icn_dir').removeClass('fa-spin')
         $('.dir_file').on('click',function(){
           let url = $(this).data('file');
           let form_data = new FormData();
@@ -328,6 +458,77 @@ function directorio(){
             }
           })
         })
+      }else{
+        $('#icn_dir').removeClass('fa-spin')
+      }
+    },
+    error: function(){
+      bootbox.alert("Error en la comunicación con el servidor")
+      $('#icn_dir').removeClass('fa-spin')
+    }
+  })
+}
+function prescripcion(column,value){
+  let form_data = new FormData();
+  form_data.append('id', $('#ddep_num').data('id'))
+  form_data.append('column', column)
+  form_data.append('value', value)
+  $.ajax({
+    url: 'index.php?nt=set_prescripcion',
+    dataType: "json",
+    cache: false,
+    processData: false,
+    contentType: false,
+    data: form_data,
+    type: 'POST',
+    success: function(php_response){
+      if (php_response.status == "ERROR") {
+        bootbox.alert(php_response.err_mns);
+      }
+    },
+    error: function(){
+      bootbox.alert("Error en la comunicación con el servidor");
+    }
+  })
+}
+function ddep_edit(column,value){
+  let form_data = new FormData();
+  form_data.append('id', $('#ddep_num').data('id'))
+  form_data.append('column', column)
+  form_data.append('value', value)
+  $.ajax({
+    url: 'index.php?nt=set_DdeP_EDIT',
+    dataType: "json",
+    cache: false,
+    processData: false,
+    contentType: false,
+    data: form_data,
+    type: 'POST',
+    success: function(php_response){
+      if (php_response.status == "ERROR") {
+        bootbox.alert(php_response.err_mns);
+      }
+    },
+    error: function(){
+      bootbox.alert("Error en la comunicación con el servidor");
+    }
+  })
+}
+function tercero_edit(nombre){
+  let form_data = new FormData();
+  form_data.append('id', $('#ddep_tercero').val())
+  form_data.append('nombre', nombre)
+  $.ajax({
+    url: 'index.php?nt=set_terceros_EDIT',
+    dataType: "json",
+    cache: false,
+    processData: false,
+    contentType: false,
+    data: form_data,
+    type: 'POST',
+    success: function(php_response){
+      if (php_response.status == "ERROR") {
+        bootbox.alert(php_response.err_mns);
       }
     },
     error: function(){
